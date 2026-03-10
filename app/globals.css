@@ -1,26 +1,936 @@
 @import "tailwindcss";
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700;900&family=Playfair+Display:ital,wght@1,400&display=swap'); */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #1a1008;
+  --ink2: #4a3825;
+  --ink3: #7a6550;
+  --red: #c0392b;
+  --red-soft: #f2dbd9;
+  --red-border: #d4534a;
+  --tan: #f5efe6;
+  --tan-mid: #ede3d4;
+  --tan-dark: #d6c9b5;
+  --page: #fdfaf6;
+  --blue: #2c5f8a;
+  --blue-soft: #ddeaf6;
+  --gold: #9a7c3a;
+  --line: #c8b99a;
+  --green: #3a6e3a;
+  --green-soft: #ddf0dd;
+  --shadow: rgba(80, 50, 20, .12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #e0d5c5;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 31px,
+      rgba(180, 160, 130, .14) 31px, rgba(180, 160, 130, .14) 32px);
+  min-height: 100vh;
+  padding: 22px 14px 60px;
+  color: var(--ink);
+}
+
+/* ── LAYOUT UTAMA ────────────────────── */
+.topbar,
+.load-panel,
+.book,
+.pagination,
+.toolbar {
+  max-width: 96%;
+  margin: 0 auto 14px;
+}
+
+/* ── TOP BAR ─────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink2);
+}
+
+.topbar-title span {
+  font-family: 'Noto Serif JP', serif;
+  font-style: normal;
+  font-weight: 900;
+  color: var(--red);
+  font-size: 1.3rem;
+}
+
+.search-wrap {
+  flex: 1;
+  max-width: 300px;
+  position: relative;
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 7px 13px 7px 34px;
+  border: 1.5px solid var(--tan-dark);
+  border-radius: 6px;
+  background: var(--page);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: .82rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .18s;
+}
+
+.search-wrap input:focus {
+  border-color: var(--red-border);
+}
+
+.search-wrap svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .4;
+  pointer-events: none;
+}
+
+.page-num {
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem;
+  color: var(--ink3);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── LOAD PANEL ──────────────────────── */
+.load-panel {
+  background: var(--page);
+  border: 1.5px dashed var(--tan-dark);
+  border-radius: 7px;
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.load-panel label {
+  font-size: .75rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
+
+.load-panel input[type=file] {
+  font-size: .74rem;
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+}
+
+.btn-sample {
+  padding: 5px 14px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: .76rem;
+  font-family: 'Noto Sans JP', sans-serif;
+  cursor: pointer;
+  transition: background .15s;
+  white-space: nowrap;
+}
+
+.btn-sample:hover {
+  background: #a42e22;
+}
+
+.load-info {
+  font-size: .7rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── TOOLBAR ─────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--page);
+  padding: 8px 16px;
+  border: 1px solid var(--tan-dark);
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem;
+  color: var(--ink2);
+  flex-wrap: wrap;
+}
+
+.tool-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-right: 1px dashed var(--tan-dark);
+  padding-right: 12px;
+}
+
+.tool-group:last-child {
+  border-right: none;
+}
+
+.tool-btn {
+  background: var(--tan);
+  border: 1px solid var(--tan-dark);
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.tool-btn.active,
+.tool-btn:hover {
+  background: var(--red);
+  color: white;
+  border-color: var(--red-border);
+}
+
+/* ── BOOK ────────────────────────────── */
+.book {
+  background: var(--page);
+  border: 1px solid var(--tan-dark);
+  border-radius: 4px;
+  box-shadow: 0 4px 30px var(--shadow), 0 1px 4px rgba(0, 0, 0, .08);
+  overflow: hidden;
+  position: relative;
+}
+
+.book::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(to right, rgba(0, 0, 0, .07), transparent);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ── ENTRY ───────────────────────────── */
+.entry {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  /* Diubah jadi 85px biar proporsional dengan layar lebar */
+  border-bottom: 1.5px solid var(--line);
+}
+
+.entry:last-child {
+  border-bottom: none;
+}
+
+.entry:hover {
+  background: #fefcf8;
+}
+
+/* ── LEFT COL — BIG KANJI ────────────── */
+.kanji-col {
+  background: var(--tan);
+  border-right: 1.5px solid var(--line);
+  padding: 18px 8px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.kanji-big {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 900;
+  font-size: 3.2rem;
+  line-height: 1;
+  color: var(--ink);
+  user-select: none;
+}
+
+.stroke-seq {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: center;
+}
+
+.stroke-box {
+  width: 17px;
+  height: 17px;
+  border: 1px solid var(--tan-dark);
+  background: var(--page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif JP', serif;
+  font-size: .52rem;
+  color: var(--ink3);
+  border-radius: 2px;
+}
+
+.badge-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  width: 100%;
+}
+
+.badge {
+  background: var(--page);
+  border: 1px solid var(--tan-dark);
+  border-radius: 3px;
+  padding: 2px 3px;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.badge-lbl {
+  font-size: .42rem;
+  color: var(--ink3);
+  opacity: .75;
+  display: block;
+}
+
+.badge-val {
+  font-size: .63rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+}
+
+.pos-pill {
+  font-size: .57rem;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+  letter-spacing: .02em;
+  margin-top: 1px;
+}
+
+.pill-noun {
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid #c4d8ed;
+}
+
+.pill-verb {
+  background: #fdf0e8;
+  color: #7a3010;
+  border: 1px solid #e8c0a0;
+}
+
+.pill-adj-i {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid #b8ddb8;
+}
+
+.pill-adj-na {
+  background: #f2eaff;
+  color: #5a3a8a;
+  border: 1px solid #d0bff0;
+}
+
+.pill-adv {
+  background: #fffadf;
+  color: #7a6010;
+  border: 1px solid #e0d080;
+}
+
+.pill-other {
+  background: var(--tan-mid);
+  color: var(--ink3);
+  border: 1px solid var(--tan-dark);
+}
+
+/* ── RIGHT COL ───────────────────────── */
+.content-col {
+  padding: 13px 18px 15px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.yomi-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 8px;
+}
+
+.yomi-block {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.y-label {
+  font-size: .6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  font-family: 'Noto Serif JP', serif;
+}
+
+.y-label.on {
+  background: var(--red-soft);
+  color: var(--red);
+  border: 1px solid #e8bfbb;
+}
+
+.y-label.kun {
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid #c4d8ed;
+}
+
+.y-label.hira {
+  background: var(--tan-mid);
+  color: var(--ink3);
+  border: 1px solid var(--tan-dark);
+}
+
+.y-val {
+  font-family: 'Noto Serif JP', serif;
+  font-size: .95rem;
+  color: var(--ink);
+}
+
+.y-val .rom {
+  font-family: 'DM Mono', monospace;
+  font-size: .67rem;
+  color: var(--ink3);
+  margin-left: 3px;
+}
+
+.lemma-tag {
+  font-size: .62rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+  margin-left: auto;
+  opacity: .75;
+}
+
+.imi-row {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 8px;
+  font-size: .78rem;
+}
+
+.imi-label {
+  font-size: .6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  font-family: 'Noto Serif JP', serif;
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid #c4d8ed;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.imi-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sense-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  line-height: 1.5;
+}
+
+.sense-n {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  color: var(--ink3);
+  background: var(--tan-mid);
+  border: 1px solid var(--tan-dark);
+  border-radius: 3px;
+  padding: 0 3px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.sense-text {
+  font-family: 'Noto Serif JP', serif;
+  color: var(--ink);
+  font-size: .9rem;
+}
+
+.sense-pos-chip {
+  font-size: .57rem;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: #f4f0ea;
+  color: var(--ink3);
+  border: 1px solid var(--tan-dark);
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+}
+
+.sense-misc {
+  font-size: .63rem;
+  color: var(--ink3);
+  font-style: italic;
+  opacity: .8;
+}
+
+.defs-collapsed .sense-line:nth-child(n+4) {
+  display: none;
+}
+
+.expand-btn {
+  background: none;
+  border: 1px solid var(--tan-dark);
+  border-radius: 4px;
+  padding: 1px 9px;
+  font-size: .66rem;
+  color: var(--ink3);
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  margin-top: 2px;
+  transition: background .12s;
+}
+
+.expand-btn:hover {
+  background: var(--tan-mid);
+}
+
+.alt-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.alt-lbl {
+  font-size: .6rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
+
+.alt-chip {
+  font-family: 'Noto Serif JP', serif;
+  font-size: .74rem;
+  padding: 1px 7px;
+  background: var(--tan-mid);
+  border: 1px solid var(--tan-dark);
+  border-radius: 12px;
+  color: var(--ink2);
+}
+
+.ex-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ex-section-title {
+  font-size: .6rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: .7;
+}
+
+.ex-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ex-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dotted var(--tan-dark);
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.ex-item:last-child {
+  border-bottom: none;
+}
+
+.ex-bullet {
+  font-size: .6rem;
+  color: var(--red);
+  flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+  margin-top: 3px;
+}
+
+.ex-jp {
+  font-family: 'Noto Serif JP', serif;
+  color: var(--ink);
+  flex: 1;
+  /* DI SINI BIANG KEROKNYA TADI: 95rem SAYA GANTI JADI .95rem */
+  font-size: .95rem;
+}
+
+.ex-jp .focus {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--red-soft);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.ex-none {
+  font-size: .72rem;
+  color: var(--ink3);
+  opacity: .5;
+  font-style: italic;
+}
+
+.book-footer {
+  background: var(--tan);
+  border-top: 1.5px solid var(--line);
+  padding: 5px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'DM Mono', monospace;
+  font-size: .68rem;
+  color: var(--ink3);
+}
+
+/* ── PAGINATION ──────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pg-btn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1.5px solid var(--tan-dark);
+  border-radius: 5px;
+  background: var(--page);
+  color: var(--ink2);
+  font-family: 'DM Mono', monospace;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .13s, border-color .13s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pg-btn:hover:not(:disabled) {
+  background: var(--tan-mid);
+  border-color: var(--red-border);
+}
+
+.pg-btn.active {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  font-weight: 700;
+}
+
+.pg-btn:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.pg-info {
+  font-family: 'DM Mono', monospace;
+  font-size: .72rem;
+  color: var(--ink3);
+  margin: 0 8px;
+}
+
+.empty-state {
+  padding: 58px 20px;
+  text-align: center;
+  color: var(--ink3);
+  opacity: .45;
+}
+
+.empty-state .big-char {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 5rem;
+  font-weight: 900;
+  display: block;
+  opacity: .25;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: .85rem;
+}
+
+@media (max-width: 600px) {
+  .entry {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .kanji-big {
+    font-size: 3.1rem;
+  }
+
+  .content-col {
+    padding: 10px 12px 12px 11px;
+  }
+}
+
+/* ── DINAMIS: FONT STYLE ─────────────── */
+.font-sans .kanji-big,
+.font-sans .y-val,
+.font-sans .ex-jp,
+.font-sans .sense-text {
+  font-family: 'Noto Sans JP', sans-serif !important;
+}
+
+.font-serif .kanji-big,
+.font-serif .y-val,
+.font-serif .ex-jp,
+.font-serif .sense-text {
+  font-family: 'Noto Serif JP', serif !important;
+}
+
+/* ── DINAMIS: ROMAJI ─────────────────── */
+.hide-romaji .rom {
+  display: none !important;
+}
+
+/* ── DINAMIS: DARK MODE ─ */
+.theme-dark {
+  --ink: #e8e6e3;
+  --ink2: #b5b0a8;
+  --ink3: #8a857d;
+  --page: #1c1a18;
+  --tan: #262320;
+  --tan-mid: #332f2b;
+  --tan-dark: #4a453f;
+  --line: #3d3934;
+  background: #121110;
+  background-image: none;
+  color: var(--ink);
+}
+
+/* ── DINAMIS: DRILL MODE (Mode Hafalan) ── */
+.hide-meaning .imi-row {
+  display: none !important;
+}
+
+.hide-examples .ex-section {
+  display: none !important;
+}
+
+/* ── URL LINK & MODAL POPUP (STROKE ORDER) ──────────── */
+.source-link-wrap {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
+.source-link-btn {
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid #c4d8ed;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-weight: 700;
+}
+
+.source-link-btn:hover {
+  background: var(--blue);
+  color: #fff;
+}
+
+/* Modal Overlay (Background Gelap Blur) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Kotak Konten Modal untuk SVG Kanji */
+.modal-content {
+  background: var(--page);
+  width: 90%;
+  max-width: 400px;
+  /* Dibuat lebih kecil karena ini gambar Kanji */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--tan);
+  border-bottom: 1px solid var(--line);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.modal-close-btn {
+  background: var(--red-soft);
+  color: var(--red);
+  border: 1px solid var(--red-border);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: var(--red);
+  color: white;
+}
+
+.modal-body {
+  flex: 1;
+  background: #fff;
+  /* Pakai putih biar garis Kanjinya jelas */
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body img {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+}
+
+/* ── VOICEVOX AUDIO BUTTON ──────────── */
+.voice-btn {
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid #c4d8ed;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all 0.2s;
+}
+
+.voice-btn:hover {
+  background: var(--blue);
+  color: white;
+  transform: scale(1.1);
+}
+
+.voice-btn:active {
+  transform: scale(0.95);
+}
+
+.voice-btn.playing {
+  background: var(--red);
+  color: white;
+  border-color: var(--red-border);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
